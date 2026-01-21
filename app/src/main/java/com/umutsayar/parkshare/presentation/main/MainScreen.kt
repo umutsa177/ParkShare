@@ -7,16 +7,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.umutsayar.parkshare.navigation.BottomNavItem
 import com.umutsayar.parkshare.navigation.Screens
 import com.umutsayar.parkshare.navigation.getOwnerBottomNavItems
 import com.umutsayar.parkshare.navigation.getRenterBottomNavItems
+import com.umutsayar.parkshare.presentation.add_listing.AddListingScreen
+import com.umutsayar.parkshare.presentation.bookings.MyBookingsScreen
+import com.umutsayar.parkshare.presentation.bookings.model.BookingModel
+import com.umutsayar.parkshare.presentation.bookings.model.BookingStatus
 import com.umutsayar.parkshare.presentation.parking.ParkingMapScreen
+import com.umutsayar.parkshare.presentation.profile.ProfileScreen
 
 @Composable
 fun MainScreen(userRole: String) {
@@ -59,31 +64,71 @@ fun MainScreen(userRole: String) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screens.Main.Map.route) {
-                ParkingMapScreen() // Senin hazırladığın harita ekranı
+                ParkingMapScreen()
             }
             composable(Screens.Main.MyBookings.route) {
-                PlaceholderScreen("Rezervasyonlarım ($userRole)")
+                // Test verisi (Mock Data)
+                val mockBookings = listOf(
+                    BookingModel(
+                        title = "Rezervasyon 1",
+                        address = "İstanbul, Kadıköy",
+                        dateTime = "15 Oca 2026",
+                        price = "450₺",
+                        status = BookingStatus.PENDING,
+                        imageRes = 0,
+                    ),
+                    BookingModel(
+                        title = "Rezervasyon 2",
+                        address = "İstanbul, Sarıyer",
+                        dateTime = "15",
+                        price = "400₺",
+                        status = BookingStatus.APPROVED,
+                        imageRes = 0,
+                    )
+                )
+
+                MyBookingsScreen(
+                    bookings = mockBookings,
+                    onSearchPark = {
+                        navController.navigate(Screens.Main.Map.route)
+                    },
+                    onDetailClick = { /* Detay sayfasına git */ }
+                )
             }
             composable(Screens.Main.AddListing.route) {
-                PlaceholderScreen("İlan Ekleme Sayfası") // Owner ise buraya erişebilir
+                AddListingScreen() // Owner ise buraya erişebilir
             }
             composable(Screens.Main.MyListings.route) {
-                PlaceholderScreen("İlanlarım") // Owner ise buraya erişebilir
+                SimplePlaceholderScreen("İlanlarım", "Henüz bir ilan eklemediniz.") // Owner ise buraya erişebilir
             }
             composable(Screens.Main.Favorites.route) {
-                PlaceholderScreen("Favoriler") // Renter ise buraya erişebilir
+                SimplePlaceholderScreen("Favoriler", "Favori park yeriniz yok.")   // Renter ise buraya erişebilir
             }
             composable(Screens.Main.Profile.route) {
-                PlaceholderScreen("Profil Ayarları")
+                ProfileScreen(
+                    onLogout = { /* Logout işlemi */ },
+                    onNavigateToEditProfile = { /* Navigasyon */ },
+                    onNavigateToNotifications = { /* Navigasyon */ },
+                    onNavigateToPaymentMethods = { /* Navigasyon */ },
+                    onNavigateToHelp = { /* Navigasyon */ }
+                )
             }
         }
     }
 }
 
-// Test için geçici ekran
 @Composable
-fun PlaceholderScreen(title: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = title, style = MaterialTheme.typography.headlineMedium)
+fun SimplePlaceholderScreen(title: String, subtitle: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        androidx.compose.foundation.layout.Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = title, style = MaterialTheme.typography.headlineMedium)
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(8.dp))
+            Text(text = subtitle, color = androidx.compose.ui.graphics.Color.Gray)
+        }
     }
 }
