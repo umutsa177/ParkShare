@@ -23,7 +23,7 @@ import com.umutsayar.parkshare.R
 
 @Composable
 fun LoginScreen(
-    onLoginClick: () -> Unit = {},
+    onLoginSuccess: (String) -> Unit = {},
     onForgotPasswordClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onGoogleSignInClick: () -> Unit = {},
@@ -206,7 +206,13 @@ fun LoginScreen(
 
             // Login Button
             Button(
-                onClick = onLoginClick,
+                onClick = {
+                    // BACKEND LOGIN İŞLEMİ BURADA YAPILIR.
+                    // Backend'den gelen kullanıcı tipine göre:
+                    // Örnek: val userRoleFromApi = apiResponse.user.role
+                    val mockRole = "RENTER" // Test için sabit
+                    onLoginSuccess(mockRole)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

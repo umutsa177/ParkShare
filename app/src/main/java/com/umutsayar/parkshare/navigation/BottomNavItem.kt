@@ -7,49 +7,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class BottomNavItem(
     val route: String,
     val title: String,
-    val icon: ImageVector,
-    val ownerOnly: Boolean = false
+    val icon: ImageVector
 ) {
-    object Map : BottomNavItem(
-        route = "map",
-        title = "Harita",
-        icon = Icons.Default.Map
-    )
-
-    object MyBookings : BottomNavItem(
-        route = "my_bookings",
-        title = "Rezervasyonlarım",
-        icon = Icons.Default.BookOnline
-    )
-
-    object AddListing : BottomNavItem(
-        route = "add_listing",
-        title = "İlan Ekle",
-        icon = Icons.Default.AddCircle,
-        ownerOnly = true
-    )
-
-    object MyListings : BottomNavItem(
-        route = "my_listings",
-        title = "İlanlarım",
-        icon = Icons.Default.Garage,
-        ownerOnly = true
-    )
-
-    object Favorites : BottomNavItem(
-        route = "favorites",
-        title = "Favoriler",
-        icon = Icons.Default.Favorite
-    )
-
-    object Profile : BottomNavItem(
-        route = "profile",
-        title = "Profil",
-        icon = Icons.Default.Person
-    )
+    object Map : BottomNavItem(Screens.Main.Map.route, "Harita", Icons.Default.Map)
+    object MyBookings : BottomNavItem(Screens.Main.MyBookings.route, "Rezervasyon", Icons.Default.DateRange)
+    object AddListing : BottomNavItem(Screens.Main.AddListing.route, "İlan Ekle", Icons.Default.AddCircle)
+    object MyListings : BottomNavItem(Screens.Main.MyListings.route, "İlanlarım", Icons.Default.List)
+    object Favorites : BottomNavItem(Screens.Main.Favorites.route, "Favoriler", Icons.Default.Favorite)
+    object Profile : BottomNavItem(Screens.Main.Profile.route, "Profil", Icons.Default.Person)
 }
 
-// OWNER için bottom nav items
+// OWNER Menüsü: [Harita] [Rezervasyonlarım] [İlan Ekle] [İlanlarım] [Profil]
 fun getOwnerBottomNavItems() = listOf(
     BottomNavItem.Map,
     BottomNavItem.MyBookings,
@@ -58,7 +26,7 @@ fun getOwnerBottomNavItems() = listOf(
     BottomNavItem.Profile
 )
 
-// RENTER için bottom nav items
+// RENTER Menüsü: [Harita] [Rezervasyonlarım] [Favoriler] [Profil]
 fun getRenterBottomNavItems() = listOf(
     BottomNavItem.Map,
     BottomNavItem.MyBookings,

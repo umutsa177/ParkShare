@@ -2,64 +2,72 @@ package com.umutsayar.parkshare.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.umutsayar.parkshare.navigation.Screen
-
-sealed class Screen(val route: String) {
-    object Splash : Screen("splash")
-    object Login : Screen("login")
-    object Register : Screen("register")
-    object Main : Screen("main")
-}
+import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import com.umutsayar.parkshare.presentation.auth.login.LoginScreen
+import com.umutsayar.parkshare.presentation.auth.register.RegisterScreen
+import com.umutsayar.parkshare.presentation.main.MainScreen
+import com.umutsayar.parkshare.presentation.splash.ParkShareSplashScreen
 
 @Composable
-fun NavGraph(
-    navController: NavHostController,
-    startDestination: String = Screen.Splash.route
-) {
+fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Screens.SplashScreen.route
     ) {
-        composable(Screen.Splash.route) {
-            SplashScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
+        // --- SPLASH ---
+        composable(Screens.SplashScreen.route) {
+            ParkShareSplashScreen(
+                onSplashFinished = {
+                    // Splash süresi bitince burası çalışır
+                    navController.navigate(Screens.Auth.Login.route) {
+                        popUpTo(Screens.SplashScreen.route) { inclusive = true }
                     }
                 }
             )
         }
 
-        composable(Screen.Login.route) {
-            LoginScreen(
-                onNavigateToRegister = {
-                    navController.navigate(Screen.Register.route)
-                },
-                onLoginSuccess = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+        // --- AUTH GRAPH ---
+        navigation(
+            startDestination = Screens.Auth.Login.route,
+            route = Screens.Auth.Root.route
+        ) {
+            composable(Screens.Auth.Login.route) {
+                LoginScreen(
+                    onSignUpClick = { navController.navigate(Screens.Auth.Register.route) },
+                    onLoginSuccess = { role ->
+                        // Login başarılı olunca rolü MainScreen'e gönder
+                        navController.navigate(Screens.Main.Root.createRoute(role)) {
+                            popUpTo(Screens.Auth.Root.route) { inclusive = true }
+                        }
                     }
-                }
-            )
+                )
+            }
+            composable(Screens.Auth.Register.route) {
+                RegisterScreen(
+                    onBack = { navController.popBackStack() },
+                    onLogin = { navController.popBackStack() }, // Login'e geri dön
+                    onRegisterSuccess = { role ->
+                        // Kayıt başarılı olunca seçilen rolü MainScreen'e gönder
+                        navController.navigate(Screens.Main.Root.createRoute(role)) {
+                            popUpTo(Screens.Auth.Root.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
         }
 
-        composable(Screen.Register.route) {
-            RegisterScreen(
-                onNavigateToLogin = {
-                    navController.popBackStack()
-                },
-                onRegisterSuccess = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Register.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-
-        composable(Screen.Main.route) {
-            MainScreen()
+        // --- MAIN SCREEN (BOTTOM NAV) ---
+        composable(
+            route = Screens.Main.Root.route,
+            arguments = listOf(navArgument("userRole") { type = NavType.StringType })
+        ) { backStackEntry ->
+            // Gelen rolü al, eğer yoksa varsayılan RENTER olsun
+            val userRole = backStackEntry.arguments?.getString("userRole") ?: "RENTER"
+            MainScreen(userRole = userRole)
         }
     }
 }

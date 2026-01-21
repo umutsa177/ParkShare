@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RegisterScreen(
     onBack: () -> Unit = {},
-    onRegister: () -> Unit = {},
+    onRegisterSuccess: (String) -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
     var userType by remember { mutableIntStateOf(0) } // 0: Owner, 1: Renter
@@ -144,7 +144,12 @@ fun RegisterScreen(
         Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = onRegister,
+            onClick = {
+                // BACKEND KAYIT İŞLEMİ BURADA YAPILIR.
+                // Başarılı olursa:
+                val role = if (userType == 0) "OWNER" else "RENTER"
+                onRegisterSuccess(role)
+            },
             enabled = termsAccepted,
             modifier = Modifier
                 .fillMaxWidth()

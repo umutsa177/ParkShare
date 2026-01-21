@@ -1,33 +1,30 @@
 package com.umutsayar.parkshare.presentation.main
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.umutsayar.parkshare.navigation.*
-
-enum class UserRole {
-    OWNER,
-    RENTER
-}
+import com.umutsayar.parkshare.navigation.BottomNavItem
+import com.umutsayar.parkshare.navigation.Screens
+import com.umutsayar.parkshare.navigation.getOwnerBottomNavItems
+import com.umutsayar.parkshare.navigation.getRenterBottomNavItems
+import com.umutsayar.parkshare.presentation.parking.ParkingMapScreen
 
 @Composable
-fun MainScreen() {
+fun MainScreen(userRole: String) {
     val navController = rememberNavController()
 
-    // Bu değeri authentication sisteminden alacaksınız
-    // Şimdilik örnek olarak OWNER kullanıyorum
-    var userRole by remember { mutableStateOf(UserRole.OWNER) }
-
-    val bottomNavItems = if (userRole == UserRole.OWNER) {
-        getOwnerBottomNavItems()
-    } else {
-        getRenterBottomNavItems()
+    // Role göre menü listesini belirle
+    val navItems = remember(userRole) {
+        if (userRole == "OWNER") getOwnerBottomNavItems() else getRenterBottomNavItems()
     }
 
     Scaffold(
@@ -36,7 +33,7 @@ fun MainScreen() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                bottomNavItems.forEach { item ->
+                navItems.forEach { item ->
                     NavigationBarItem(
                         icon = { Icon(item.icon, contentDescription = item.title) },
                         label = { Text(item.title) },
@@ -54,60 +51,39 @@ fun MainScreen() {
                 }
             }
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
+        // Bottom Bar Rotalarının İçeriği
         NavHost(
             navController = navController,
-            startDestination = BottomNavItem.Map.route,
-            modifier = Modifier.padding(paddingValues)
+            startDestination = Screens.Main.Map.route,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            composable(BottomNavItem.Map.route) {
-                MapScreen(
-                    onSpotClick = { spotId ->
-                        // Spot detail ekranına git
-                    }
-                )
+            composable(Screens.Main.Map.route) {
+                ParkingMapScreen() // Senin hazırladığın harita ekranı
             }
-
-            composable(BottomNavItem.MyBookings.route) {
-                MyBookingsScreen(
-                    userRole = userRole
-                )
+            composable(Screens.Main.MyBookings.route) {
+                PlaceholderScreen("Rezervasyonlarım ($userRole)")
             }
-
-            if (userRole == UserRole.OWNER) {
-                composable(BottomNavItem.AddListing.route) {
-                    AddListingScreen(
-                        onListingAdded = {
-                            navController.navigate(BottomNavItem.MyListings.route)
-                        }
-                    )
-                }
-
-                composable(BottomNavItem.MyListings.route) {
-                    MyListingsScreen(
-                        onListingClick = { listingId ->
-                            // İlan detay ekranına git
-                        }
-                    )
-                }
-            } else {
-                composable(BottomNavItem.Favorites.route) {
-                    FavoritesScreen(
-                        onSpotClick = { spotId ->
-                            // Spot detail ekranına git
-                        }
-                    )
-                }
+            composable(Screens.Main.AddListing.route) {
+                PlaceholderScreen("İlan Ekleme Sayfası") // Owner ise buraya erişebilir
             }
-
-            composable(BottomNavItem.Profile.route) {
-                ProfileScreen(
-                    userRole = userRole,
-                    onLogout = {
-                        // Ana NavController'a logout sinyali gönder
-                    }
-                )
+            composable(Screens.Main.MyListings.route) {
+                PlaceholderScreen("İlanlarım") // Owner ise buraya erişebilir
+            }
+            composable(Screens.Main.Favorites.route) {
+                PlaceholderScreen("Favoriler") // Renter ise buraya erişebilir
+            }
+            composable(Screens.Main.Profile.route) {
+                PlaceholderScreen("Profil Ayarları")
             }
         }
+    }
+}
+
+// Test için geçici ekran
+@Composable
+fun PlaceholderScreen(title: String) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = title, style = MaterialTheme.typography.headlineMedium)
     }
 }
