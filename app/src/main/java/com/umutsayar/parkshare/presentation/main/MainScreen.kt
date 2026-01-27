@@ -1,13 +1,8 @@
 package com.umutsayar.parkshare.presentation.main
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,8 +15,20 @@ import com.umutsayar.parkshare.presentation.add_listing.AddListingScreen
 import com.umutsayar.parkshare.presentation.bookings.MyBookingsScreen
 import com.umutsayar.parkshare.presentation.bookings.model.BookingModel
 import com.umutsayar.parkshare.presentation.bookings.model.BookingStatus
+import com.umutsayar.parkshare.presentation.favorites.FavoritesScreen
+import com.umutsayar.parkshare.presentation.my_listing.MyListingsScreen
 import com.umutsayar.parkshare.presentation.parking.ParkingMapScreen
 import com.umutsayar.parkshare.presentation.profile.ProfileScreen
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.umutsayar.parkshare.presentation.add_listing.TextGray
 
 @Composable
 fun MainScreen(userRole: String) {
@@ -99,36 +106,36 @@ fun MainScreen(userRole: String) {
                 AddListingScreen() // Owner ise buraya erişebilir
             }
             composable(Screens.Main.MyListings.route) {
-                SimplePlaceholderScreen("İlanlarım", "Henüz bir ilan eklemediniz.") // Owner ise buraya erişebilir
+                MyListingsScreen() // Owner ise buraya erişebilir
             }
             composable(Screens.Main.Favorites.route) {
-                SimplePlaceholderScreen("Favoriler", "Favori park yeriniz yok.")   // Renter ise buraya erişebilir
+                FavoritesScreen()   // Renter ise buraya erişebilir
             }
             composable(Screens.Main.Profile.route) {
-                ProfileScreen(
-                    onLogout = { /* Logout işlemi */ },
-                    onNavigateToEditProfile = { /* Navigasyon */ },
-                    onNavigateToNotifications = { /* Navigasyon */ },
-                    onNavigateToPaymentMethods = { /* Navigasyon */ },
-                    onNavigateToHelp = { /* Navigasyon */ }
-                )
+                ProfileScreen()
             }
         }
     }
 }
 
+// --- Yardımcı Bileşenler ---
+
 @Composable
-fun SimplePlaceholderScreen(title: String, subtitle: String) {
+fun ContainerBadge(color: Color, content: @Composable () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier
+            .background(color, RoundedCornerShape(4.dp))
+            .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
-        androidx.compose.foundation.layout.Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium)
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = subtitle, color = androidx.compose.ui.graphics.Color.Gray)
-        }
+        content()
+    }
+}
+
+@Composable
+fun StatItem(icon: ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, contentDescription = null, tint = TextGray, modifier = Modifier.size(14.dp))
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text, fontSize = 12.sp, color = TextGray)
     }
 }
