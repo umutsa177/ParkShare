@@ -38,7 +38,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://your-production-api.com/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000/api/\"")
         }
         debug {
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000/api/\"")
@@ -52,6 +52,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

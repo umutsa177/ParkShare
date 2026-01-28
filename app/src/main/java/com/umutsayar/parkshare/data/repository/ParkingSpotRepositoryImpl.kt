@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ParkingSpotRepositoryImpl @Inject constructor(
-    private val api: ParkingService
+    private val parkingService: ParkingService
 ) : ParkingSpotRepository {
 
     override suspend fun getNearbyParkingSpots(
@@ -22,7 +22,7 @@ class ParkingSpotRepositoryImpl @Inject constructor(
     ): Flow<Resource<List<ParkingSpot>>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.getNearbyParkingSpots(
+            val response = parkingService.getNearbyParkingSpots(
                 latitude = latitude,
                 longitude = longitude,
                 radius = radius,
@@ -47,7 +47,7 @@ class ParkingSpotRepositoryImpl @Inject constructor(
     ): Flow<Resource<ParkingSpot>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.getParkingSpotById(spotId)
+            val response = parkingService.getParkingSpotById(spotId)
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val spot = response.body()?.data?.spot
@@ -69,7 +69,7 @@ class ParkingSpotRepositoryImpl @Inject constructor(
     ): Flow<Resource<ParkingSpot>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.createParkingSpot(spot.toCreateRequest())
+            val response = parkingService.createParkingSpot(spot.toCreateRequest())
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val createdSpot = response.body()?.data?.spot
@@ -89,7 +89,7 @@ class ParkingSpotRepositoryImpl @Inject constructor(
     override suspend fun getMyParkingSpots(): Flow<Resource<List<ParkingSpot>>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.getMyParkingSpots()
+            val response = parkingService.getMyParkingSpots()
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val spots = response.body()?.data?.spots ?: emptyList()
@@ -105,7 +105,7 @@ class ParkingSpotRepositoryImpl @Inject constructor(
     override suspend fun deleteParkingSpot(spotId: String): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.deleteParkingSpot(spotId)
+            val response = parkingService.deleteParkingSpot(spotId)
 
             if (response.isSuccessful && response.body()?.success == true) {
                 emit(Resource.Success(Unit))

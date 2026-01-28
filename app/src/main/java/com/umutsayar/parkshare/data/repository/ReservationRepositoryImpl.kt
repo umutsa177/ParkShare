@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ReservationRepositoryImpl @Inject constructor(
-    private val api: ReservationService
+    private val reservationService: ReservationService
 ) : ReservationRepository {
 
     override suspend fun createReservation(
@@ -22,7 +22,7 @@ class ReservationRepositoryImpl @Inject constructor(
     ): Flow<Resource<Reservation>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.createReservation(
+            val response = reservationService.createReservation(
                 CreateReservationRequest(
                     spotId = spotId,
                     startDate = startDate,
@@ -52,7 +52,7 @@ class ReservationRepositoryImpl @Inject constructor(
     ): Flow<Resource<List<Reservation>>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.getMyBookings(status?.apiValue)
+            val response = reservationService.getMyBookings(status?.apiValue)
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val reservations = response.body()?.data?.reservations ?: emptyList()
@@ -70,7 +70,7 @@ class ReservationRepositoryImpl @Inject constructor(
     ): Flow<Resource<List<Reservation>>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.getMyListings(status?.apiValue)
+            val response = reservationService.getMyListings(status?.apiValue)
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val reservations = response.body()?.data?.reservations ?: emptyList()
@@ -90,7 +90,7 @@ class ReservationRepositoryImpl @Inject constructor(
     ): Flow<Resource<Reservation>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.updateReservationStatus(
+            val response = reservationService.updateReservationStatus(
                 reservationId,
                 UpdateReservationStatusRequest(status.apiValue, cancellationReason)
             )

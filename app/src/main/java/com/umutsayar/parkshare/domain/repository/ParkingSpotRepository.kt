@@ -27,5 +27,3 @@ interface ParkingSpotRepository {
         spotId: String
     ): Flow<Resource<Unit>>
 }
-
-// =====

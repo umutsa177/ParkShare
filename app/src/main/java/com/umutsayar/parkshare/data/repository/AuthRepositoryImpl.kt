@@ -1,8 +1,14 @@
 package com.umutsayar.parkshare.data.repository
 
 import com.umutsayar.parkshare.data.remote.api.auth.AuthService
+import com.umutsayar.parkshare.data.remote.api.parking.ParkingService
+import com.umutsayar.parkshare.data.remote.api.reservation.ReservationService
+import com.umutsayar.parkshare.data.remote.api.review.ReviewService
 import com.umutsayar.parkshare.data.remote.dto.auth.*
-import com.umutsayar.parkshare.data.remote.dto.profile.UpdateProfileRequest
+import com.umutsayar.parkshare.data.remote.dto.parking.*
+import com.umutsayar.parkshare.data.remote.dto.profile.*
+import com.umutsayar.parkshare.data.remote.dto.reservation.*
+import com.umutsayar.parkshare.data.remote.dto.review.*
 import com.umutsayar.parkshare.data.remote.mapper.*
 import com.umutsayar.parkshare.domain.model.*
 import com.umutsayar.parkshare.domain.repository.*
@@ -13,7 +19,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val api: AuthService
+    private val authService: AuthService
 ) : AuthRepository {
 
     override suspend fun register(
@@ -25,7 +31,7 @@ class AuthRepositoryImpl @Inject constructor(
     ): Flow<Resource<AuthResult>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.register(
+            val response = authService.register(
                 RegisterRequest(
                     name = name,
                     email = email,
@@ -65,7 +71,7 @@ class AuthRepositoryImpl @Inject constructor(
     ): Flow<Resource<AuthResult>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.login(
+            val response = authService.login(
                 LoginRequest(email, password)
             )
 
@@ -96,7 +102,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun getProfile(): Flow<Resource<User>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.getProfile()
+            val response = authService.getProfile()
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val user = response.body()?.data?.user
@@ -120,7 +126,7 @@ class AuthRepositoryImpl @Inject constructor(
     ): Flow<Resource<User>> = flow {
         emit(Resource.Loading())
         try {
-            val response = api.updateProfile(
+            val response = authService.updateProfile(
                 UpdateProfileRequest(name, phone, profileImage)
             )
 
@@ -139,5 +145,3 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 }
-
-// =====================
