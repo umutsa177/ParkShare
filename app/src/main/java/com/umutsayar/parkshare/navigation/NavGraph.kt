@@ -10,7 +10,7 @@ import androidx.navigation.navArgument
 import com.umutsayar.parkshare.presentation.auth.login.LoginScreen
 import com.umutsayar.parkshare.presentation.auth.register.RegisterScreen
 import com.umutsayar.parkshare.presentation.main.MainScreen
-import com.umutsayar.parkshare.presentation.splash.ParkShareSplashScreen
+import com.umutsayar.parkshare.presentation.splash.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -20,13 +20,16 @@ fun NavGraph(navController: NavHostController) {
     ) {
         // --- SPLASH ---
         composable(Screens.SplashScreen.route) {
-            ParkShareSplashScreen(
-                onSplashFinished = {
-                    // Splash süresi bitince burası çalışır
-                    navController.navigate(Screens.Auth.Login.route) {
-                        popUpTo(Screens.SplashScreen.route) { inclusive = true }
-                    }
-                }
+            SplashScreen(
+
+                    onNavigateToLogin = {
+                        navController.navigate(Screens.Auth.Login.route) {
+                            popUpTo(Screens.SplashScreen.route) { inclusive = true }
+                        }
+                    },
+
+                onNavigateToHome = { }
+
             )
         }
 
@@ -37,10 +40,9 @@ fun NavGraph(navController: NavHostController) {
         ) {
             composable(Screens.Auth.Login.route) {
                 LoginScreen(
-                    onSignUpClick = { navController.navigate(Screens.Auth.Register.route) },
-                    onLoginSuccess = { role ->
-                        // Login başarılı olunca rolü MainScreen'e gönder
-                        navController.navigate(Screens.Main.Root.createRoute(role)) {
+                    onNavigateToRegister = { navController.navigate(Screens.Auth.Register.route) },
+                    onNavigateToHome = {
+                        navController.navigate(Screens.Main.Root.createRoute("userRole")) {
                             popUpTo(Screens.Auth.Root.route) { inclusive = true }
                         }
                     }
@@ -48,11 +50,10 @@ fun NavGraph(navController: NavHostController) {
             }
             composable(Screens.Auth.Register.route) {
                 RegisterScreen(
-                    onBack = { navController.popBackStack() },
-                    onLogin = { navController.popBackStack() }, // Login'e geri dön
-                    onRegisterSuccess = { role ->
+                    onNavigateToLogin = { navController.popBackStack() }, // Login'e geri dön
+                    onNavigateToHome = {
                         // Kayıt başarılı olunca seçilen rolü MainScreen'e gönder
-                        navController.navigate(Screens.Main.Root.createRoute(role)) {
+                        navController.navigate(Screens.Main.Root.createRoute("userRole")) {
                             popUpTo(Screens.Auth.Root.route) { inclusive = true }
                         }
                     }

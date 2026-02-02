@@ -105,6 +105,10 @@ object NetworkModule {
             .build()
     }
 
+    // ============================================
+    // API SERVICES
+    // ============================================
+
     @Provides
     @Singleton
     fun provideAuthService(
