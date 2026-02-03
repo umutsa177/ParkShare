@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- Kamera izni (Fotoğraf çekmek için - opsiyonel) -->
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera"/>
 
     <!-- Depolama izinleri (Fotoğraf seçmek için - opsiyonel) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
+        android:name=".ParkShareApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
