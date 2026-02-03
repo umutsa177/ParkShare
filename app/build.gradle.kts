@@ -24,7 +24,7 @@ android {
         }
 
         // API Base URL
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000/api/\"")
+        buildConfigField("String", "BASE_URL", "\"http://192.168.1.191:5000/api/\"")
 
         // Google Maps API Key from local.properties
         val mapsApiKey = project.findProperty("MAPS_API_KEY") as String? ?: ""
@@ -38,10 +38,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.1.191:5000/api/\"")
         }
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.1.191:5000/api/\"")
         }
     }
 

@@ -26,7 +26,7 @@ import javax.inject.Singleton
 // DataStore extension
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "parkshare_prefs")
 
-val BASE_URL = "http://10.0.2.2:5000/api/"
+val BASE_URL = "http://192.168.1.191:5000/api/"
 
 @Module
 @InstallIn(SingletonComponent::class)
