@@ -15,40 +15,36 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-    @Module
-    @InstallIn(SingletonComponent::class)
-    object RepositoryModule {
 
-        @Provides
-        @Singleton
-        fun provideAuthRepository(
-            authService: AuthService
-        ): AuthRepository {
-            return AuthRepositoryImpl(authService)
-        }
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        authService: AuthService
+    ): AuthRepository {
+        return AuthRepositoryImpl(authService)
+    }
 
-        @Provides
-        @Singleton
-        fun provideParkingSpotRepository(
-            parkingService: ParkingService
-        ): ParkingSpotRepository {
-            return ParkingSpotRepositoryImpl(parkingService)
-        }
+    @Provides
+    @Singleton
+    fun provideParkingSpotRepository(
+        parkingService: ParkingService
+    ): ParkingSpotRepository {
+        return ParkingSpotRepositoryImpl(parkingService)
+    }
 
-        @Provides
-        @Singleton
-        fun provideReservationRepository(
-            reservationService: ReservationService
-        ): ReservationRepository {
-            return ReservationRepositoryImpl(reservationService)
-        }
+    @Provides
+    @Singleton
+    fun provideReservationRepository(
+        reservationService: ReservationService
+    ): ReservationRepository {
+        return ReservationRepositoryImpl(reservationService)
+    }
 
-        @Provides
-        @Singleton
-        fun provideReviewRepository(
-            reviewService: ReviewService
-        ): ReviewRepository {
-            return ReviewRepositoryImpl(reviewService)
-        }
+    @Provides
+    @Singleton
+    fun provideReviewRepository(
+        reviewService: ReviewService
+    ): ReviewRepository {
+        return ReviewRepositoryImpl(reviewService)
     }
 }
